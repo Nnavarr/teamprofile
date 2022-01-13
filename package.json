@@ -1,0 +1,26 @@
+{
+  "name": "week10-teamprofile",
+  "version": "1.0.0",
+  "description": "![badmath](https://img.shields.io/badge/-HTML-orange) ![badmath](https://img.shields.io/badge/-CSS-blue) ![badmath](https://img.shields.io/badge/-JS-yellow)",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nnavarr/teamprofile.git"
+  },
+  "author": "Noe Navarro",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Nnavarr/teamprofile/issues"
+  },
+  "homepage": "https://github.com/Nnavarr/teamprofile#readme",
+  "dependencies": {
+    "inquirer": "^8.2.0"
+  }
+}
