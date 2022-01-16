@@ -2,6 +2,7 @@ const inquirer = require('inquirer');
 const Manager = require('./lib/Manager');
 const Intern = require('./lib/Intern');
 const Engineer = require('./lib/Engineer');
+const fs = require('fs')
 
 const validName = (input) => {
     // check for a first and last name
@@ -67,9 +68,81 @@ let managerPrompt = () => {
         }
     ])
     .then(function(data){
-        return console.log(data);
+        cardCreator(data)
     })
 }
 
 // test input
-managerPrompt();
+// managerPrompt();
+
+// test class creation
+let noe = new Manager('noe navarro', 1234567, 'noe.navarro1019@gmail.com', 6239102064)
+
+const cardCreator = (employee) => {
+    // extract employee role
+    let role = employee.getRole();
+    let cardHTML = '';
+
+    // logic for creating card for each role
+    if (role === 'Manager'){
+        // manager logic
+        cardHTML = 
+    `
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">${employee.name}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Manager</h6>
+                            <h7 class="card-subtitle mb-2 text-muted">${employee.id}</h7>
+                            <a href="#" class="card-link">${employee.email}</a>
+                            <a href="#" class="card-link">${employee.officeNumber}</a>
+                        </div>
+                    </div>
+    `
+    } else if (role === 'Engineer'){
+        // engineer logic
+        cardHTML = 
+    `
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">${employee.name}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Engineer</h6>
+                            <h7 class="card-subtitle mb-2 text-muted">${employee.id}</h7>
+                            <a href="#" class="card-link">${employee.email}</a>
+                            <a href="#" class="card-link">${employee.github}</a>
+                        </div>
+                    </div>
+    `
+    } else {
+        // intern logic
+        cardHTML = 
+    `
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">${employee.name}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Intern</h>
+                            <h7 class="card-subtitle mb-2 text-muted">${employee.id}</h7>
+                            <a href="#" class="card-link">${employee.email}</a>
+                            <a href="#" class="card-link">${employee.github}</a>
+                        </div>
+                    </div>
+    `
+    }
+    return cardHTML;
+}
+
+let noeCard = cardCreator(noe);
+console.log(noeCard);
+
+// test html template
+const template = require('./src/htmlTemplate');
+const { resolve } = require('path');
+let newTemp = template(noeCard);
+
+// test writing of HTML file
+fs.writeFile('./dist/teamHTML.html', newTemp, err=> {
+    if(err){
+        console.log(err);
+        return;
+    }
+    console.log('The file was created successfully!')
+})
