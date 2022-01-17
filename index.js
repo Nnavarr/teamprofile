@@ -238,31 +238,31 @@ const managerPrompt = () => {
     })
 }
 
-// managerPrompt();
+managerPrompt();
 
-// test clas/s creation
-let manager = new Manager('Noe Navarro', 1234567, 'noe.navarro1019@manager.com', 623555555)
-let engineer = new Engineer('Noe Navarro', 1234567, 'noe.navarro1019@engineer.com', 'nnavarr')
-let intern = new Intern('Noe Navarro', 1234567, 'noe.navarro@intern.com', 'UofA')
+// // test clas/s creation
+// let manager = new Manager('Noe Navarro', 1234567, 'noe.navarro1019@manager.com', 623555555)
+// let engineer = new Engineer('Noe Navarro', 1234567, 'noe.navarro1019@engineer.com', 'nnavarr')
+// let intern = new Intern('Noe Navarro', 1234567, 'noe.navarro@intern.com', 'UofA')
 
-// create cards from various employees
-let card1 = cardCreator(manager);
-let card2 = cardCreator(engineer);
-let card3 = cardCreator(intern)
+// // create cards from various employees
+// let card1 = cardCreator(manager);
+// let card2 = cardCreator(engineer);
+// let card3 = cardCreator(intern)
 
-// concatenate into a single string
-let newString = card1 + card2 + card3
-console.log(newString);
+// // concatenate into a single string
+// let newString = card1 + card2 + card3
+// console.log(newString);
 
-// generate html template
-const template = require('./src/htmlTemplate');
-let newTemp = template(newString);
+// // generate html template
+// const template = require('./src/htmlTemplate');
+// let newTemp = template(newString);
 
-// test writing of HTML file
-fs.writeFile('./dist/teamHTML.html', newTemp, err=> {
-    if(err){
-        console.log(err);
-        return;
-    }
-    console.log('The file was created successfully!')
-})
+// // test writing of HTML file
+// fs.writeFile('./dist/teamHTML.html', newTemp, err=> {
+//     if(err){
+//         console.log(err);
+//         return;
+//     }
+//     console.log('The file was created successfully!')
+// })
