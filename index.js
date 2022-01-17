@@ -2,7 +2,8 @@ const inquirer = require('inquirer');
 const Manager = require('./lib/Manager');
 const Intern = require('./lib/Intern');
 const Engineer = require('./lib/Engineer');
-const fs = require('fs')
+const fs = require('fs');
+const async = require('async');
 
 const validName = (input) => {
     // check for a first and last name
@@ -37,8 +38,163 @@ const validNumber = (input) => {
     return true;
 }
 
+// care creation logic
+const cardCreator = (employee) => {
+    // extract employee role
+    let role = employee.getRole();
+    let cardHTML = '';
+
+    // logic for creating card for each role
+    if (role === 'Manager'){
+        // manager logic
+        cardHTML = 
+    `
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">${employee.name}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Manager</h6>
+                            <p></p>
+                            <h7 class="card-subtitle mb-2 text-muted">${employee.id}</h7>
+                            <p></p>
+                            <p>Email: <a href="mailto:${employee.email}" class="card-link">${employee.email}</a></p>
+                            <p>Phone: ${employee.officeNumber}</p>
+                        </div>
+                    </div>
+    `
+    } else if (role === 'Engineer'){
+        // engineer logic
+        cardHTML = 
+    `
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">${employee.name}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Engineer</h6>
+                            <p></p>
+                            <h7 class="card-subtitle mb-2 text-muted">${employee.id}</h7>
+                            <p></p>
+                            <p>Email: <a href="mailto:${employee.email}" class="card-link">${employee.email}</a></p>
+                            <p>Github: <a href="http://www.github.com/${employee.github}" class="card-link">${employee.github}</a></p>
+                        </div>
+                    </div>
+    `
+    } else {
+        // intern logic
+        cardHTML = 
+    `
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">${employee.name}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Intern</h>
+                            <p></p>
+                            <h7 class="card-subtitle mb-2 text-muted">${employee.id}</h7>
+                            <p></p>
+                            <p>Email: <a href="mailto:${employee.email}" class="card-link">${employee.email}</a></p>
+                            <p>School: ${employee.school}</p>
+                        </div>
+                    </div>
+    `
+    }
+    return cardHTML;
+}
+
+const checkNewMember = (fileNum) => {
+    
+    // check for new member
+    inquirer.prompt([
+        {
+            name: 'newteam',
+            message: "Please select a new team member",
+            type: 'list',
+            choices: ['Engineer', 'Intern', 'None']
+        }
+    ])
+    .then(function(data){
+
+        // if the team is complete, end process
+        if (data.newteam === 'None'){
+            return 
+        } else if (data.newteam === 'Engineer'){
+            inquirer.prompt([
+                {
+                    // promp name
+                    name: 'name',
+                    message: "What is the Engineer's name?",
+                    type: 'input',
+                    validate: validName
+                },
+                {
+                    name: 'id',
+                    message: "What is their employee number? (must be 7 digits)",
+                    type:'input',
+                    validate: validId
+                },
+                {
+                    name: 'email',
+                    message: "What is their email address?",
+                    type: 'input',
+                    validate: validEmail
+                },
+                {
+                    name: 'github',
+                    message: "What is their github username?",
+                    type: 'input'
+                }
+            ])
+            .then(function(data){
+                let engineer = new Engineer(data.name, data.id, data.email, data.github);
+                let card = cardCreator(engineer);
+                
+                // write text file
+                fs.writeFile('./src/card' + fileNum +'.txt', card, (err) => {
+                    if (err){
+                        console.log(err);
+                    }
+                });
+            })
+
+        } else {
+            // intern logic
+            inquirer.prompt([
+                {
+                    // promp name
+                    name: 'name',
+                    message: "What is the Intern's name?",
+                    type: 'input',
+                    validate: validName
+                },
+                {
+                    name: 'id',
+                    message: "What is their employee number? (must be 7 digits)",
+                    type:'input',
+                    validate: validId
+                },
+                {
+                    name: 'email',
+                    message: "What is their email address?",
+                    type: 'input',
+                    validate: validEmail
+                },
+                {
+                    name: 'school',
+                    message: "What school do they attend?",
+                    type: 'input'
+                }
+            ])
+            .then(function(data){
+                let intern = new Intern(data.name, data.id, data.email, data.school);
+                let card = cardCreator(intern);
+                fs.writeFile('./src/card' + fileNum +'.txt', card, (err) => {
+                    if (err){
+                        console.log(err)
+                    }
+                });
+            })
+        }
+    })
+}
+
 // prompt for manager
-let managerPrompt = () => {
+const managerPrompt = () => {
     //  ask for user input 
     inquirer.prompt([
         {
@@ -68,75 +224,39 @@ let managerPrompt = () => {
         }
     ])
     .then(function(data){
-        cardCreator(data)
+        // compile managers card
+        let manager = new Manager(data.name, data.id, data.email, data.officeNumber);
+        let mangerCard = cardCreator(manager);
+        fs.writeFile('./src/card1.txt', mangerCard, (err) => {
+            if (err){
+                console.log(err);
+            }
+    })
+    })
+    .then(function(data){
+        checkNewMember(2);
     })
 }
 
-// test input
 // managerPrompt();
 
-// test class creation
-let noe = new Manager('noe navarro', 1234567, 'noe.navarro1019@gmail.com', 6239102064)
+// test clas/s creation
+let manager = new Manager('Noe Navarro', 1234567, 'noe.navarro1019@manager.com', 623555555)
+let engineer = new Engineer('Noe Navarro', 1234567, 'noe.navarro1019@engineer.com', 'nnavarr')
+let intern = new Intern('Noe Navarro', 1234567, 'noe.navarro@intern.com', 'UofA')
 
-const cardCreator = (employee) => {
-    // extract employee role
-    let role = employee.getRole();
-    let cardHTML = '';
+// create cards from various employees
+let card1 = cardCreator(manager);
+let card2 = cardCreator(engineer);
+let card3 = cardCreator(intern)
 
-    // logic for creating card for each role
-    if (role === 'Manager'){
-        // manager logic
-        cardHTML = 
-    `
-                    <div class="card" style="width: 18rem;">
-                        <div class="card-body">
-                            <h5 class="card-title">${employee.name}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">Manager</h6>
-                            <h7 class="card-subtitle mb-2 text-muted">${employee.id}</h7>
-                            <a href="#" class="card-link">${employee.email}</a>
-                            <a href="#" class="card-link">${employee.officeNumber}</a>
-                        </div>
-                    </div>
-    `
-    } else if (role === 'Engineer'){
-        // engineer logic
-        cardHTML = 
-    `
-                    <div class="card" style="width: 18rem;">
-                        <div class="card-body">
-                            <h5 class="card-title">${employee.name}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">Engineer</h6>
-                            <h7 class="card-subtitle mb-2 text-muted">${employee.id}</h7>
-                            <a href="#" class="card-link">${employee.email}</a>
-                            <a href="#" class="card-link">${employee.github}</a>
-                        </div>
-                    </div>
-    `
-    } else {
-        // intern logic
-        cardHTML = 
-    `
-                    <div class="card" style="width: 18rem;">
-                        <div class="card-body">
-                            <h5 class="card-title">${employee.name}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">Intern</h>
-                            <h7 class="card-subtitle mb-2 text-muted">${employee.id}</h7>
-                            <a href="#" class="card-link">${employee.email}</a>
-                            <a href="#" class="card-link">${employee.github}</a>
-                        </div>
-                    </div>
-    `
-    }
-    return cardHTML;
-}
+// concatenate into a single string
+let newString = card1 + card2 + card3
+console.log(newString);
 
-let noeCard = cardCreator(noe);
-console.log(noeCard);
-
-// test html template
+// generate html template
 const template = require('./src/htmlTemplate');
-const { resolve } = require('path');
-let newTemp = template(noeCard);
+let newTemp = template(newString);
 
 // test writing of HTML file
 fs.writeFile('./dist/teamHTML.html', newTemp, err=> {
