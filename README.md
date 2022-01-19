@@ -14,4 +14,4 @@ In its current state, please set the team members and roles within the index.js 
 
 
 ### Usage Video
-A video showcasing the functionality can be seen [here](https://watch.screencastify.com/v/aXfK8pctvT02cMCbiIwR)
+A video showcasing the functionality can be seen [here](https://watch.screencastify.com/v/XpTDBOyrhTAmb67FuuxE)
