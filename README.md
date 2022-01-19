@@ -10,5 +10,8 @@ As of 1/16/2022, the synchronous run of inquirer is still being developed. Howev
 ### Usage
 In its current state, please set the team members and roles within the index.js file.  From there, the HTML page will be written into the 'dist' directory.
 
+![alt text](src/teampage.png)
+
+
 ### Usage Video
 A video showcasing the functionality can be seen [here](https://watch.screencastify.com/v/aXfK8pctvT02cMCbiIwR)
