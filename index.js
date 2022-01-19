@@ -4,6 +4,8 @@ const Intern = require('./lib/Intern');
 const Engineer = require('./lib/Engineer');
 const fs = require('fs');
 const async = require('async');
+const template = require('./src/htmlTemplate');
+var cardArray = [];
 
 const validName = (input) => {
     // check for a first and last name
@@ -97,9 +99,10 @@ const cardCreator = (employee) => {
     return cardHTML;
 }
 
-const checkNewMember = (fileNum) => {
-    
+const checkNewMember = () => {
+
     // check for new member
+    console.log('Hello');
     inquirer.prompt([
         {
             name: 'newteam',
@@ -109,9 +112,28 @@ const checkNewMember = (fileNum) => {
         }
     ])
     .then(function(data){
-
+        console.log('hello then');
         // if the team is complete, end process
         if (data.newteam === 'None'){
+            // create single string from many 
+            let newString = ''
+            for (i in cardArray){
+                newString += cardArray[i]
+            }
+
+            // create HTML template
+            const template = require('./src/htmlTemplate');
+            let newTemp = template(newString);
+
+            // test writing of HTML file
+            fs.writeFile('./dist/teamHTML.html', newTemp, err=> {
+                if(err){
+                    console.log(err);
+                    return;
+                }
+                console.log('The file was created successfully!')
+            })
+
             return 
         } else if (data.newteam === 'Engineer'){
             inquirer.prompt([
@@ -143,13 +165,9 @@ const checkNewMember = (fileNum) => {
             .then(function(data){
                 let engineer = new Engineer(data.name, data.id, data.email, data.github);
                 let card = cardCreator(engineer);
-                
-                // write text file
-                fs.writeFile('./src/card' + fileNum +'.txt', card, (err) => {
-                    if (err){
-                        console.log(err);
-                    }
-                });
+                cardArray.push(card);
+                console.log(cardArray);
+                checkNewMember();
             })
 
         } else {
@@ -183,11 +201,9 @@ const checkNewMember = (fileNum) => {
             .then(function(data){
                 let intern = new Intern(data.name, data.id, data.email, data.school);
                 let card = cardCreator(intern);
-                fs.writeFile('./src/card' + fileNum +'.txt', card, (err) => {
-                    if (err){
-                        console.log(err)
-                    }
-                });
+                cardArray.push(card);
+                console.log(cardArray);
+                checkNewMember();
             })
         }
     })
@@ -227,42 +243,13 @@ const managerPrompt = () => {
         // compile managers card
         let manager = new Manager(data.name, data.id, data.email, data.officeNumber);
         let mangerCard = cardCreator(manager);
-        fs.writeFile('./src/card1.txt', mangerCard, (err) => {
-            if (err){
-                console.log(err);
-            }
+        cardArray.push(mangerCard);
+        console.log('cardArray');
     })
-    })
-    .then(function(data){
-        checkNewMember(2);
+    .then(() => {
+        checkNewMember();
     })
 }
 
-// managerPrompt();
-
-// test clas/s creation
-let manager = new Manager('Noe Navarro', 1234567, 'noe.navarro1019@manager.com', 623555555)
-let engineer = new Engineer('Noe Navarro', 1234567, 'noe.navarro1019@engineer.com', 'nnavarr')
-let intern = new Intern('Noe Navarro', 1234567, 'noe.navarro@intern.com', 'UofA')
-
-// create cards from various employees
-let card1 = cardCreator(manager);
-let card2 = cardCreator(engineer);
-let card3 = cardCreator(intern)
-
-// concatenate into a single string
-let newString = card1 + card2 + card3
-console.log(newString);
-
-// generate html template
-const template = require('./src/htmlTemplate');
-let newTemp = template(newString);
-
-// test writing of HTML file
-fs.writeFile('./dist/teamHTML.html', newTemp, err=> {
-    if(err){
-        console.log(err);
-        return;
-    }
-    console.log('The file was created successfully!')
-})
+// main call
+managerPrompt();
