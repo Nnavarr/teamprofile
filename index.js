@@ -102,7 +102,6 @@ const cardCreator = (employee) => {
 const checkNewMember = () => {
 
     // check for new member
-    console.log('Hello');
     inquirer.prompt([
         {
             name: 'newteam',
@@ -112,7 +111,6 @@ const checkNewMember = () => {
         }
     ])
     .then(function(data){
-        console.log('hello then');
         // if the team is complete, end process
         if (data.newteam === 'None'){
             // create single string from many 
@@ -133,7 +131,6 @@ const checkNewMember = () => {
                 }
                 console.log('The file was created successfully!')
             })
-
             return 
         } else if (data.newteam === 'Engineer'){
             inquirer.prompt([
@@ -166,7 +163,6 @@ const checkNewMember = () => {
                 let engineer = new Engineer(data.name, data.id, data.email, data.github);
                 let card = cardCreator(engineer);
                 cardArray.push(card);
-                console.log(cardArray);
                 checkNewMember();
             })
 
@@ -202,7 +198,6 @@ const checkNewMember = () => {
                 let intern = new Intern(data.name, data.id, data.email, data.school);
                 let card = cardCreator(intern);
                 cardArray.push(card);
-                console.log(cardArray);
                 checkNewMember();
             })
         }
@@ -244,7 +239,6 @@ const managerPrompt = () => {
         let manager = new Manager(data.name, data.id, data.email, data.officeNumber);
         let mangerCard = cardCreator(manager);
         cardArray.push(mangerCard);
-        console.log('cardArray');
     })
     .then(() => {
         checkNewMember();
